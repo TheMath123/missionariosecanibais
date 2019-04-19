@@ -8,21 +8,24 @@ import java.util.ArrayList;
 public class Busca { //Arvore de busca
     
     Estado estadoInicial;
-    Estado estadoFinal;
-    ArrayList<Estado> proxEstados;
-    ArrayList<Estado> caminho;
-    int custo;
+    Estado estadoObjetivo;
+    ArrayList<No> fronteira;
+    ArrayList<No> caminho;
     ArrayList<No> nosVisitados;
+    int custoTotal;
  
     //Verifica se estado atual é o objetivo.
     public boolean testObjetivo(Estado atual){
-        if(atual.equals(estadoFinal)){
+        if(atual.equals(estadoObjetivo)){
             return true;
         }else{
             return false;
         }
     }
 
+    //Método construtor
+    
+    
     //Métodos gets e sets.
     public Estado getEstadoInicial() {
         return estadoInicial;
@@ -31,32 +34,25 @@ public class Busca { //Arvore de busca
         this.estadoInicial = estadoInicial;
     }
 
-    public Estado getEstadoFinal() {
-        return estadoFinal;
+    public Estado getEstadoObjetivo() {
+        return estadoObjetivo;
     }
-    public void setEstadoFinal(Estado estadoFinal) {
-        this.estadoFinal = estadoFinal;
-    }
-
-    public ArrayList<Estado> getProxEstados() {
-        return proxEstados;
-    }
-    public void setProxEstados(ArrayList<Estado> proxEstados) {
-        this.proxEstados = proxEstados;
+    public void setEstadoObjetivo(Estado estadoObjetivo) {
+        this.estadoObjetivo = estadoObjetivo;
     }
 
-    public ArrayList<Estado> getCaminho() {
+    public ArrayList<No> getFronteira() {
+        return fronteira;
+    }
+    public void setFronteira(ArrayList<No> fronteira) {
+        this.fronteira = fronteira;
+    }
+
+    public ArrayList<No> getCaminho() {
         return caminho;
     }
-    public void setCaminho(ArrayList<Estado> caminho) {
+    public void setCaminho(ArrayList<No> caminho) {
         this.caminho = caminho;
-    }
-
-    public int getCusto() {
-        return custo;
-    }
-    public void setCusto(int custo) {
-        this.custo = custo;
     }
 
     public ArrayList<No> getNosVisitados() {
@@ -64,9 +60,13 @@ public class Busca { //Arvore de busca
     }
     public void setNosVisitados(ArrayList<No> nosVisitados) {
         this.nosVisitados = nosVisitados;
-    }//
-    
-    
-    
+    }
+
+    public int getCustoTotal() {
+        return custoTotal;
+    }
+    public void setCustoTotal(int custoTotal) {
+        this.custoTotal = custoTotal;
+    }
     
 }

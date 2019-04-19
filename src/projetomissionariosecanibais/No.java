@@ -1,23 +1,27 @@
+/* @Matheus P. Agostinho */
 
 package projetomissionariosecanibais;
 
 
 public class No {
-    private Estado estado;
+    private Estado atual;
     private Estado pai;
     private int custoCaminho;
 
-    public No(Estado estado, Estado pai, int custoCaminho) {
-        this.estado = estado;
+    //Método construtor
+    public No(Estado atual, Estado pai, int custoCaminho) {
+        this.atual = atual;
         this.pai = pai;
         this.custoCaminho = custoCaminho;
     }
-
-    public Estado getEstado() {
-        return estado;
+    
+    
+    //Métodos gets e sets
+    public Estado getAtual() {
+        return atual;
     }
-    public void setEstado(Estado estado) {
-        this.estado = estado;
+    public void setAtul(Estado atul) {
+        this.atual = atul;
     }
 
     public Estado getPai() {
@@ -33,7 +37,7 @@ public class No {
     public void setCustoCaminho(int custoCaminho) {
         this.custoCaminho = custoCaminho;
     }
-
+    
     
     
 }
