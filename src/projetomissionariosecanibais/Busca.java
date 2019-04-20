@@ -9,10 +9,49 @@ public class Busca { //Arvore de busca
     
     Estado estadoInicial;
     Estado estadoObjetivo;
-    ArrayList<No> fronteira;
-    ArrayList<No> caminho;
-    ArrayList<No> nosVisitados;
-    int custoTotal;
+    ArrayList<Estado> fronteira;
+    ArrayList<Estado> caminho;
+    ArrayList<Estado> nosVisitados;
+    int custoTotal = 0;
+    
+    //Coloca nó na fronteira
+    public void colocaFronteira(Estado atual){
+        if(atual.remove1Cada()){
+            atual.remove1Cada();
+            atual.setCusto(atual.getCusto()+1);
+            atual.setBote(true);
+            fronteira.add(atual);
+            System.out.println(toString());
+        }
+        if(atual.remove1Tipo(true)){
+            atual.remove1Tipo(true);
+            atual.setCusto(atual.getCusto()+1);
+            atual.setBote(true);
+            fronteira.add(atual);
+            System.out.println(toString());
+        }
+        if(atual.remove1Tipo(false)){
+            atual.remove1Tipo(false);
+            atual.setCusto(atual.getCusto()+1);
+            atual.setBote(true);
+            fronteira.add(atual);
+            System.out.println(toString());
+        }
+        if(atual.remove2Tipo(true)){
+            atual.remove2Tipo(true);
+            atual.setCusto(atual.getCusto()+1);
+            atual.setBote(true);
+            fronteira.add(atual);
+            System.out.println(toString());
+        }
+        if(atual.remove2Tipo(false)){
+            atual.remove2Tipo(false);
+            atual.setCusto(atual.getCusto()+1);
+            atual.setBote(true);
+            fronteira.add(atual);
+            System.out.println(toString());
+        }
+    }
  
     //Verifica se estado atual é o objetivo.
     public boolean testObjetivo(Estado atual){
@@ -24,49 +63,10 @@ public class Busca { //Arvore de busca
     }
 
     //Método construtor
-    
-    
-    //Métodos gets e sets.
-    public Estado getEstadoInicial() {
-        return estadoInicial;
-    }
-    public void setEstadoInicial(Estado estadoInicial) {
+    public Busca(Estado estadoInicial) {
         this.estadoInicial = estadoInicial;
-    }
-
-    public Estado getEstadoObjetivo() {
-        return estadoObjetivo;
-    }
-    public void setEstadoObjetivo(Estado estadoObjetivo) {
-        this.estadoObjetivo = estadoObjetivo;
-    }
-
-    public ArrayList<No> getFronteira() {
-        return fronteira;
-    }
-    public void setFronteira(ArrayList<No> fronteira) {
-        this.fronteira = fronteira;
-    }
-
-    public ArrayList<No> getCaminho() {
-        return caminho;
-    }
-    public void setCaminho(ArrayList<No> caminho) {
-        this.caminho = caminho;
-    }
-
-    public ArrayList<No> getNosVisitados() {
-        return nosVisitados;
-    }
-    public void setNosVisitados(ArrayList<No> nosVisitados) {
-        this.nosVisitados = nosVisitados;
-    }
-
-    public int getCustoTotal() {
-        return custoTotal;
-    }
-    public void setCustoTotal(int custoTotal) {
-        this.custoTotal = custoTotal;
+        fronteira.add(estadoInicial);
+        this.estadoObjetivo = new Estado(0, 0, true);
     }
     
 }
