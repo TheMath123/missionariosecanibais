@@ -9,38 +9,42 @@ public class Estado {
     private int custo = 0;
     Estado pai = null;//Armazena o estado de origem - Obs.: Caso tiver.
     
-    //Remove 1 missionário ou canibal
-    public boolean remove1Tipo(boolean tipo){
+    //Verifica restrição, se pode remover 1 do mesmo tipo de uma margem
+    public boolean testeRemove1Tipo(boolean tipo){
                Estado temporario = this;
         if(tipo){ //true = missionário
             temporario.setMissionario(temporario.getMissionario()-1);
             if(temporario.getCanibal() <= temporario.getMissionario() && canibal <= missionario-1 && missionario > 0){
-                missionario-=1;
-                custo++;
                 return true;
             }else{
                 return false;
             }
         }else{ //false =canibal
-            temporario.setCanibal(temporario.getCanibal()-2);
+            temporario.setCanibal(temporario.getCanibal()-1);
             if(temporario.getCanibal() <= temporario.getMissionario() && canibal <= missionario-1 && canibal > 0){
-                canibal-=1;
-                custo++;
                 return true;
             }else{
                 return false;
             }
         }
     }
-
-    //Remove 2 missionários ou canibais
-    public boolean remove2Tipo(boolean tipo){
+    //Remove 1 missionário ou canibal
+    public void remove1Tipo(boolean tipo){
+        if(tipo){ //missionarios
+            missionario-=1;
+            custo++;
+        }else{
+            canibal-=1;
+            custo++;
+        }
+    }
+    
+    //Verifica restrição, se pode remover 2 do mesmo tipo de uma margem
+    public boolean testeRemove2Tipo(boolean tipo){
         Estado temporario = this;
         if(tipo){ //true = missionário
             temporario.setMissionario(temporario.getMissionario()-2);
             if(temporario.getCanibal() <= temporario.getMissionario() && canibal <= missionario-1){
-                missionario -=2;
-                custo++;
                 return true;
             }else{
                 return false;
@@ -48,28 +52,39 @@ public class Estado {
         }else{ //false =canibal
             temporario.setCanibal(temporario.getCanibal()-2);
             if(temporario.getCanibal() <= temporario.getMissionario() && canibal <= missionario-1 && canibal >= 2){
-                canibal -=2;
-                custo++;
                 return true;
             }else{
                 return false;
             }
         }
     }
+    //Remove 2 missionários ou canibais
+    public void remove2Tipo(boolean tipo){
+        if(tipo){ //missionarios
+            missionario-=2;
+            custo++;
+        }else{
+            canibal-=2;
+            custo++;
+        }
+    }
 
-    //Remove 1 de cada
-    public boolean remove1Cada(){
+    //Verifica restrição, se pode mover 1 de cada tipo
+    public boolean testeRemove1Cada(){
         Estado temporario = this;
         temporario.setMissionario(temporario.getMissionario()-1);
         temporario.setCanibal(temporario.getCanibal()-1);
         if(temporario.getCanibal() <= temporario.getMissionario() && canibal <= missionario-1){
-            missionario -=1;
-            canibal -=1;
-            custo++;
             return true;
         }else{
             return false;
         }
+    }
+    //Remove 1 de cada
+    public void remove1Cada(){
+        missionario -=1;
+        canibal -=1;
+        custo++;
     }
 
     //Construtor
@@ -113,6 +128,9 @@ public class Estado {
     }
     public void setCusto(int custo) {
         this.custo = custo;
+    }
+    public void custoMove(){ // Soma + 1 ao custo de movimentação.
+        custo++;
     }
 
     public Estado getPai() {

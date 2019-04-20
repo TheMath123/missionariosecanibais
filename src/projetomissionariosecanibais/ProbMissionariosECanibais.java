@@ -2,6 +2,7 @@
 
 package projetomissionariosecanibais;
 
+import projetomissionariosecanibais.algoritmos.Busca;
 import java.util.Scanner;
 
 public class ProbMissionariosECanibais {
