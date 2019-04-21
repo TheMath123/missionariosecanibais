@@ -4,16 +4,19 @@ package projetomissionariosecanibais;
 
 import projetomissionariosecanibais.algoritmos.Busca;
 import java.util.Scanner;
+import projetomissionariosecanibais.algoritmos.Largura;
 
 public class ProbMissionariosECanibais {
 
     public static void main(String[] args) {
-        Estado atual = new Estado(3, 3, false);
-        Estado objetivo = new Estado(0, 0, true);
 
         int quantMC = entradaAlg();
         if(quantMC != -1){
-            Busca profundidade = new Busca(new Estado(quantMC, quantMC));
+            Estado inicial = new Estado(quantMC, quantMC);
+            Largura profundidade = new Largura(inicial);
+            if(profundidade.buscarCaminho(inicial)){
+                profundidade.imprimeCaminho();
+            }
         }else{
             System.out.println("ERRO: Quantidade de criaturas inválida.");
         }

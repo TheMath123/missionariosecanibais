@@ -21,77 +21,52 @@ public class Largura extends Busca{
 
     public boolean buscarCaminho(Estado inicial) {
         Estado objetivo = null;
-        Boolean sair = true;
+        Estado reconstrucao = null;
         
         ArrayList<Estado> fronteira = new ArrayList<>();
         fronteira.add(inicial);
         boolean margem = true; //true = esquerda e false=direita
         
         //Criar os nós acionam na fronteira de busca
-        while(sair){ 
-            for (int i = 0; i < fronteira.size(); i++) {
-                Estado atual = fronteira.get(i);
+        while(fronteira.size() > 0){ 
+            Estado atual = fronteira.get(0);
+            fronteira.remove(0); 
+            if(testeObjetivo(atual)){
+                objetivo = atual;
+                caminho.add(atual);
+                break;
+            }else{
+                //Verificar margem atual e proxima margem no obj estado
                 if(atual.testeRemove1Cada()){ //Cra um novo nó de movimentação de um canibal e um missionario 
                     Estado novo = atual;
-                    novo.setPai(novo); //Seta o nó atual como pai
-                    novo.remove1Cada(); //realiza a movimentação
-                    novo.custoMove(); //soma +1 a custo da movimentação
-                    novo.setBote(margem); //adiona a margem atual do bole
+                    novo.setPai(atual); //Seta o nó atual como pai
+                    novo.remove1Cada(margem); //realiza a movimentação
                     fronteira.add(novo); //adiciona o novo nó a fronteira de busca
-                    if(testeObjetivo(novo)){
-                        objetivo = novo;
-                        break;
-                    }
                 }
                 if(atual.testeRemove1Tipo(true)){ //Cria um nó de movimentação de um missionario 
                     Estado novo = atual;
-                    novo.setPai(novo);
-                    novo.remove1Tipo(true);
-                    novo.custoMove();
-                    novo.setBote(margem);
+                    novo.setPai(atual);
+                    novo.remove1Tipo(true, margem);
                     fronteira.add(novo);
-                    if(testeObjetivo(novo)){
-                        objetivo = novo;
-                        break;
-                    }
                 }
                 if(atual.testeRemove1Tipo(false)){ //Cria um nó de movimentação de um canibal
                     Estado novo = atual;
-                    novo.setPai(novo);
-                    atual.remove1Tipo(false);
-                    novo.custoMove();
-                    atual.setBote(margem);
+                    novo.setPai(atual);
+                    novo.remove1Tipo(false, margem);
                     fronteira.add(novo);
-                    if(testeObjetivo(novo)){
-                        objetivo = novo;
-                        break;
-                    }
                 }
                 if(atual.testeRemove2Tipo(true)){ //Cria um nó de movimentação de dois missionarios
                     Estado novo = atual;
-                    novo.setPai(novo);
-                    novo.remove2Tipo(true);
-                    novo.custoMove();
-                    novo.setBote(margem);
+                    novo.setPai(atual);
+                    novo.remove2Tipo(true, margem);
                     fronteira.add(novo);
-                    if(testeObjetivo(novo)){
-                        objetivo = novo;
-                        break;
-                    }
                 }
                 if(atual.testeRemove2Tipo(false)){ //Cria um nó de movimentação de dois canibais
                     Estado novo = atual;
-                    novo.setPai(novo);
-                    novo.remove2Tipo(false);
-                    novo.custoMove();
-                    novo.setBote(margem);
+                    novo.setPai(atual);
+                    novo.remove2Tipo(false, margem);
                     fronteira.add(novo);
-                    if(testeObjetivo(novo)){
-                        objetivo = novo;
-                        break;
-                    }
                 }
-                fronteira.remove(i);
             }
             
             //Altera a margem
@@ -103,6 +78,23 @@ public class Largura extends Busca{
         }
         
         //Reconstrução do caminho
-        return false;
+        if(objetivo != null){
+            boolean sair = false;
+            reconstrucao = objetivo.getPai();
+            while(sair != true){                
+                if(reconstrucao == null){
+                    sair = true;
+                }else{
+                    Estado novo = reconstrucao;
+                    caminho.add(novo);
+                    reconstrucao = novo.getPai();
+                }
+            }
+            System.out.println("Encoontrei!");
+            return true;
+        }else{
+            System.out.println("Não descobri a solução!");
+            return false;
+        }
     }
 }
