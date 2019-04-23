@@ -1,6 +1,6 @@
 /* @Matheus P. Agostinho */
 
-package projetomissionariosecanibais.algoritmos;
+package algoritmos;
 
 import java.util.ArrayList;
 import projetomissionariosecanibais.Estado;
@@ -31,7 +31,7 @@ public class Busca { //Arvore de busca
     //Método construtor
     public Busca(Estado estadoInicial) {
         this.estadoInicial = estadoInicial;
-        this.estadoObjetivo = new Estado(0, 0, true);
+        this.estadoObjetivo = new Estado(0, 0, false);
     }
     
     //Metodos gets e sets
