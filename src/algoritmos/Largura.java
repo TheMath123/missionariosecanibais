@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package projetomissionariosecanibais.algoritmos;
+package algoritmos;
 
 import java.util.ArrayList;
 import projetomissionariosecanibais.Estado;
