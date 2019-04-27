@@ -1,0 +1,174 @@
+   /*
+    
+    //Verifica restrição, se pode remover 1 do mesmo tipo de uma margem
+    public boolean testeRemove1Tipo(boolean tipo){
+        int tempC = canibal;
+        int tempM = missionario;
+        if(tipo){ //true = missionário
+            if(tempC <= tempM-1 && tempM >= 0){
+                return true;
+            }else{
+                return false;
+            }
+        }else{ //false =canibal
+            if(tempC-1 <= tempM && tempC >= 0){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+    //Remove 1 missionário ou canibal
+    public void remove1Tipo(boolean tipo, boolean margem){
+        if(tipo){ //missionarios
+            custoMove(); //adciona o custo da movimentação
+            setBote(margem);
+            missionario-=1;
+            custo++;
+        }else{
+            custoMove();
+            setBote(margem); //faz a movimentação do bote de uma margem para outra
+            canibal-=1;
+            custo++;
+        }
+    }
+    
+    //Verifica restrição, se pode remover 2 do mesmo tipo de uma margem
+    public boolean testeRemove2Tipo(boolean tipo){
+        int tempC = canibal;
+        int tempM = missionario;
+        if(tipo){ //true = missionário
+            if(tempC <= missionario-2 && missionario >= 0){
+                return true;
+            }else{
+                return false;
+            }
+        }else{ //false =canibal
+            if(tempC-2 <= missionario && tempC >= 0){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+    //Remove 2 missionários ou canibais
+    public void remove2Tipo(boolean tipo, boolean margem){
+        if(tipo){ //missionarios
+            custoMove();
+            setBote(margem);
+            missionario-=2;
+            custo++;
+        }else{
+            custoMove();
+            setBote(margem);
+            canibal-=2;
+            custo++;
+        }
+    }
+
+    //Verifica restrição, se pode mover 1 de cada tipo
+    public boolean testeRemove1Cada(){
+        int tempC = canibal;
+        int tempM = missionario;
+        Estado temporario = this;
+        if(tempC-1 <= tempM-2 && canibal <= missionario){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    //Remove 1 de cada
+    public void remove1Cada(boolean margem){
+        custoMove();
+        setBote(margem);
+        missionario -=1;
+        canibal -=1;
+        custo++;
+    }
+*/
+
+
+// Busca em largura v1
+
+public Largura(Estado estadoInicial) {
+        super(estadoInicial);
+    }
+
+    public boolean buscarCaminho(Estado inicial) {
+        Estado objetivo = null;
+        Estado reconstrucao = null;
+        
+        ArrayList<Estado> fronteira = new ArrayList<>();
+        fronteira.add(inicial);
+        boolean margem = true; //true = esquerda e false=direita
+        
+        //Criar os nós acionam na fronteira de busca
+        while(fronteira.size() > 0){ 
+            Estado atual = fronteira.get(0);
+            fronteira.remove(0); 
+            if(testeObjetivo(atual)){
+                objetivo = atual;
+                caminho.add(atual);
+                break;
+            }else{
+                //Verificar margem atual e proxima margem no obj estado
+                if(atual.testeRemove1Cada()){ //Cra um novo nó de movimentação de um canibal e um missionario 
+                    Estado novo = atual;
+                    novo.setPai(atual); //Seta o nó atual como pai
+                    novo.remove1Cada(margem); //realiza a movimentação
+                    fronteira.add(novo); //adiciona o novo nó a fronteira de busca
+                }
+                if(atual.testeRemove1Tipo(true)){ //Cria um nó de movimentação de um missionario 
+                    Estado novo = atual;
+                    novo.setPai(atual);
+                    novo.remove1Tipo(true, margem);
+                    fronteira.add(novo);
+                }
+                if(atual.testeRemove1Tipo(false)){ //Cria um nó de movimentação de um canibal
+                    Estado novo = atual;
+                    novo.setPai(atual);
+                    novo.remove1Tipo(false, margem);
+                    fronteira.add(novo);
+                }
+                if(atual.testeRemove2Tipo(true)){ //Cria um nó de movimentação de dois missionarios
+                    Estado novo = atual;
+                    novo.setPai(atual);
+                    novo.remove2Tipo(true, margem);
+                    fronteira.add(novo);
+                }
+                if(atual.testeRemove2Tipo(false)){ //Cria um nó de movimentação de dois canibais
+                    Estado novo = atual;
+                    novo.setPai(atual);
+                    novo.remove2Tipo(false, margem);
+                    fronteira.add(novo);
+                }
+            }
+            
+            //Altera a margem
+            if(margem){ 
+                margem = false;
+            }else{
+                margem = true;
+            }
+        }
+        
+        //Reconstrução do caminho
+        if(objetivo != null){
+            boolean sair = false;
+            reconstrucao = objetivo.getPai();
+            while(sair != true){                
+                if(reconstrucao == null){
+                    sair = true;
+                }else{
+                    Estado novo = reconstrucao;
+                    caminho.add(novo);
+                    reconstrucao = novo.getPai();
+                }
+            }
+            System.out.println("Encoontrei!");
+            return true;
+        }else{
+            System.out.println("Não descobri a solução!");
+            return false;
+        }
+    }
