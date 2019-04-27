@@ -1,37 +1,44 @@
-/* @Matheus P. Agostinho */
 
 package projetomissionariosecanibais;
 
-import algoritmos.Busca;
-import java.util.Scanner;
 import algoritmos.Largura;
+import java.util.ArrayList;
+
+/**
+ *
+ * @author Matheus P. Agostinho <mat.matheus.p.agostinho@gmail.com>
+ */
 
 public class ProbMissionariosECanibais {
 
     public static void main(String[] args) {
-
-        int quantMC = entradaAlg();
-        if(quantMC != -1){
-            Estado inicial = new Estado(quantMC, quantMC);
-            Largura profundidade = new Largura(inicial);
-            if(profundidade.buscarCaminho(inicial)){
-                profundidade.imprimeCaminho();
-            }
-        }else{
-            System.out.println("ERRO: Quantidade de criaturas inválida.");
-        }
-        
+        Largura buscar = new Largura();
+        Estado solucao;
+        solucao = buscar.buscaLargura(new Estado(3, 3, 0, 0, false));
+        imprimeCaminho(solucao);
     }
     
-    public static int entradaAlg(){
-        Scanner tec = new Scanner(System.in);
-        
-        System.out.print("Digite a quantidade criaturas (Obs.: Somente número pares): ");
-        int quantCriaturas = tec.nextInt();
-        if(quantCriaturas%2 == 0){
-           return quantCriaturas /= 2;
+    public static void imprimeCaminho(Estado solucao){
+        if(solucao == null){
+            System.out.println("Ops! Não encontrei uma solução.");
         }else{
-            return -1;
+            System.out.println("Caminho:");
+            ArrayList<Estado> caminho = new ArrayList<>();
+            Estado temp = solucao;
+            while(temp != null){
+                caminho.add(temp);
+                temp = temp.getPai();
+            }
+            int viagens = caminho.size()-1;
+            for (int i = viagens; i >= 0 ; i--) {
+                temp = caminho.get(i);
+                if(temp.testeObjetivo()){
+                    System.out.print(temp.toString());
+                }else{
+                    System.out.print(temp.toString()+" > ");
+                }
+            }
+            System.out.println("\nViagens: "+viagens);
         }
     }
 }

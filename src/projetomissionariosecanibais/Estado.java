@@ -1,123 +1,94 @@
-/* @Matheus P. Agostinho */
 
 package projetomissionariosecanibais;
 
+import java.util.ArrayList;
+
+/**
+ *
+ * @author Matheus P. Agostinho <mat.matheus.p.agostinho@gmail.com>
+ */
+
 public class Estado {
-    private int missionario; // 0 a n missionários
-    private int canibal; // 0 a n canibais
+    private int missionariosEsq; // 0 a n missionários - margem esquerda
+    private int canibaisEsq; // 0 a n canibais - margem esquerda
+    private int missionarioDir; //margem direita
+    private int canibalDir; //margem direita
+    
     private boolean bote; //"false" - Direita / "true" - Esquerda
-    private int custo = 0;
-    Estado pai = null;//Armazena o estado de origem - Obs.: Caso tiver.
+    Estado pai;//Armazena o estado de origem - Obs.: Caso tiver.
     
-    //Verifica restrição, se pode remover 1 do mesmo tipo de uma margem
-    public boolean testeRemove1Tipo(boolean tipo){
-        if(tipo){ //true = missionário
-            if(canibal <= missionario-1 && missionario >= 0){
-                return true;
-            }else{
-                return false;
-            }
-        }else{ //false =canibal
-            if(canibal-1 <= missionario && canibal >= 0){
-                return true;
-            }else{
-                return false;
-            }
-        }
-    }
-    //Remove 1 missionário ou canibal
-    public void remove1Tipo(boolean tipo, boolean margem){
-        if(tipo){ //missionarios
-            custoMove(); //adciona o custo da movimentação
-            setBote(margem);
-            missionario-=1;
-            custo++;
-        }else{
-            custoMove();
-            setBote(margem); //faz a movimentação do bote de uma margem para outra
-            canibal-=1;
-            custo++;
-        }
+    public boolean eValido(){
+        return missionariosEsq >= 0 && missionarioDir >= 0 && canibaisEsq >= 0 && canibalDir >= 0 
+                && (missionariosEsq == 0 || missionariosEsq >= canibaisEsq) 
+                && (missionarioDir == 0 || missionarioDir >= canibalDir);
     }
     
-    //Verifica restrição, se pode remover 2 do mesmo tipo de uma margem
-    public boolean testeRemove2Tipo(boolean tipo){
-        if(tipo){ //true = missionário
-            if(canibal <= missionario-2 && missionario >= 0){
-                return true;
-            }else{
-                return false;
-            }
-        }else{ //false =canibal
-            if(canibal-2 <= missionario && canibal >= 0){
-                return true;
-            }else{
-                return false;
-            }
+    public boolean testeObjetivo(){
+        return missionariosEsq == 0 && canibaisEsq == 0;
+    }
+    
+    public ArrayList<Estado> geraSucessores(){
+        ArrayList<Estado> sucessores = new ArrayList<>();
+        if(!bote){ //Move da margem esquerda para direita
+            podeAdd(sucessores, new Estado(missionariosEsq-1, canibaisEsq-1, missionarioDir+1, canibalDir+1, true)); //Move 1 missionario e 1 canibal para margem direita.
+            podeAdd(sucessores, new Estado(missionariosEsq-1, canibaisEsq, missionarioDir+1, canibalDir, true)); //Move 1 missionario para margem direita;
+            podeAdd(sucessores, new Estado(missionariosEsq, canibaisEsq-1, missionarioDir, canibalDir+1, true)); //Move 1 canibal para margem direita
+            podeAdd(sucessores, new Estado(missionariosEsq-2, canibaisEsq, missionarioDir+2, canibalDir, true)); //Move 2 missionarios para margem direita
+            podeAdd(sucessores, new Estado(missionariosEsq, canibaisEsq-2, missionarioDir, canibalDir+2, true)); //Move 2 canibal para margem direita
+        }else{ //move da margem direita para esquerda
+            podeAdd(sucessores, new Estado(missionariosEsq-1, canibaisEsq-1, missionarioDir+1, canibalDir+1, false)); //Move 1 missionario e 1 canibal para margem esquerda.
+            podeAdd(sucessores, new Estado(missionariosEsq-1, canibaisEsq, missionarioDir+1, canibalDir, false)); //Move 1 missionario para margem esquerda;
+            podeAdd(sucessores, new Estado(missionariosEsq, canibaisEsq-1, missionarioDir, canibalDir+1, false)); //Move 1 canibal para margem esquerda
+            podeAdd(sucessores, new Estado(missionariosEsq-2, canibaisEsq, missionarioDir+2, canibalDir, false)); //Move 2 missionarios para margem esquerda
+            podeAdd(sucessores, new Estado(missionariosEsq, canibaisEsq-2, missionarioDir, canibalDir+2, false)); //Move 2 canibal para margem esquerda
+        }
+        return sucessores;
+    }
+    
+    public void podeAdd(ArrayList<Estado> sucessores, Estado novo){
+        if(novo.eValido()){
+            novo.setPai(this);
+            sucessores.add(novo);
         }
     }
-    //Remove 2 missionários ou canibais
-    public void remove2Tipo(boolean tipo, boolean margem){
-        if(tipo){ //missionarios
-            custoMove();
-            setBote(margem);
-            missionario-=2;
-            custo++;
-        }else{
-            custoMove();
-            setBote(margem);
-            canibal-=2;
-            custo++;
-        }
-    }
-
-    //Verifica restrição, se pode mover 1 de cada tipo
-    public boolean testeRemove1Cada(){
-        Estado temporario = this;
-        temporario.setMissionario(temporario.getMissionario()-1);
-        temporario.setCanibal(temporario.getCanibal()-1);
-        if(temporario.getCanibal() <= temporario.getMissionario() && canibal <= missionario){
-            return true;
-        }else{
-            return false;
-        }
-    }
-    //Remove 1 de cada
-    public void remove1Cada(boolean margem){
-        custoMove();
-        setBote(margem);
-        missionario -=1;
-        canibal -=1;
-        custo++;
-    }
-
+    
     //Construtor
-    public Estado(int missionario, int canibal) { //Construtor inicio
-        this.missionario = missionario;
-        this.canibal = canibal;
-        this.bote = false;
-    }
-    
-    public Estado(int missionario, int canibal, boolean bote){ //Construtor para nó
-        this.missionario = missionario;
-        this.canibal = canibal;
+    public Estado(int missionariosEsq, int canibaisEsq, int missionarioDir, int canibalDir, boolean bote) {
+        this.missionariosEsq = missionariosEsq;
+        this.canibaisEsq = canibaisEsq;
+        this.missionarioDir = missionarioDir;
+        this.canibalDir = canibalDir;
         this.bote = bote;
     }
     //
 
     //Métodos gets e sets
-    public int getMissionario() {
-        return missionario;
+    public int getMissionarioEsq() {
+        return missionariosEsq;
     }
-    public void setMissionario(int missionario) {
-        this.missionario = missionario;
+    public void setMissionarioEsq(int missionariosEsq) {
+        this.missionariosEsq = missionariosEsq;
     }
 
-    public int getCanibal() {
-        return canibal;
+    public int getCanibalEsq() {
+        return canibaisEsq;
     }
-    public void setCanibal(int canibal) {
-        this.canibal = canibal;
+    public void setCanibalEsq(int canibaisEsq) {
+        this.canibaisEsq = canibaisEsq;
+    }
+
+    public int getMissionarioDir() {
+        return missionarioDir;
+    }
+    public void setMissionarioDir(int missionarioDir) {
+        this.missionarioDir = missionarioDir;
+    }
+
+    public int getCanibalDir() {
+        return canibalDir;
+    }
+    public void setCanibalDir(int canibalDir) {
+        this.canibalDir = canibalDir;
     }
 
     public boolean isBote() {
@@ -127,28 +98,23 @@ public class Estado {
         this.bote = bote;
     }
 
-    public int getCusto() {
-        return custo;
-    }
-    public void setCusto(int custo) {
-        this.custo = custo;
-    }
-    public void custoMove(){ // Soma + 1 ao custo de movimentação.
-        custo++;
-    }
-
     public Estado getPai() {
         return pai;
     }
     public void setPai(Estado pai) {
         this.pai = pai;
-    }    
+    }
     //
 
 
     @Override
     public String toString() {
-        return "[M: " + missionario + "| C: " + canibal + "| B: " + bote + "]\n";
+        //"false" - Direita / "true" - Esquerda
+        if(bote){
+            return "[M: " + missionariosEsq + "| C: " + canibaisEsq + "| Bote Esquerda |M: "+ missionarioDir + "| C: "+ canibalDir +"]";
+        }else{
+            return "[M: " + missionariosEsq + "| C: " + canibaisEsq + "| Bote Direita |M: "+ missionarioDir + "| C: "+ canibalDir +"]";
+        }
     }
 
 }
