@@ -1,4 +1,4 @@
-# missionariosecanibais
+## Algoritmos para resolução do problema dos *missionários e canibais*
 O projeto trata-se de algoritmos de busca, que devem completar o desafio dos missionários e canibais na menor quantidade de passos possível.
 
 ### :gear::hammer_and_wrench: Implementação
